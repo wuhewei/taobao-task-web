@@ -12,10 +12,17 @@
         <el-menu-item index="3"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
     </el-menu>
 </template>
-
+f
 <script>
     export default {
         name: "Nav",
+        data() {
+          return {
+              menuItems: [
+                  {}
+              ]
+          }
+        },
         methods: {
             handleSelect(key, keyPath) {
                 console.log(key, keyPath);
