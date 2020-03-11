@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <el-header>
+        <el-header v-show="this.isLogin">
             <Nav />
         </el-header>
         <el-main>

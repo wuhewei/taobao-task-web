@@ -25,18 +25,31 @@ const routes = [
     {path: '/about', component: about, meta: {requireAuth: true}},
 ];
 
+Vue.prototype.isLogin = false;
+
 const router = new VueRouter({routes});
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requireAuth)) { // 判断该路由是否需要登录权限
         console.log('需要登录...');
-        if (localStorage.token) { // 判断当前的token是否存在 ； 登录存入的token
-            next();
-        } else {
+        let token = localStorage.getItem('token');
+        Vue.prototype.isLogin = !!token;
+        // 未登录状态；当路由到nextRoute指定页时，跳转至login
+        if (!token) {
             next({
-                path: '/',
-                query: {redirect: to.fullPath} // 将跳转的路由path作为参数，登录成功后跳转到该路由
+                path: '/login',
+                // 将跳转的路由path作为参数，登录成功后跳转到该路由
+                query: {redirect: to.fullPath}
             })
+        } else {
+            next();
+        }
+        // 已登录状态；当路由到login时，跳转至home
+        if (to.name === 'login') {
+            if (token) {
+                console.log('已登录');
+                router.push({path: '/home'});
+            }
         }
     } else {
         next();

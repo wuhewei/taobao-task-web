@@ -71,24 +71,25 @@
                 let that = this;
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        that.$axios.get('/doLogin', {
-                            params: {
-                                username: that.ruleForm.username,
-                                password: that.ruleForm.password
-                            }
-                        }).then(function (response) {
-                            if (response.data === 'ok') {
-                                window.location.replace('index');
-                            } else {
-                                that.$message({
-                                    message: '用户名或密码错误',
-                                    duration: 1500,
-                                    type: 'error'
-                                });
-                            }
-                        }).catch(function (err) {
-                            console.log(err);
-                        });
+                        // that.$axios.get('/doLogin', {
+                        //     params: {
+                        //         username: that.ruleForm.username,
+                        //         password: that.ruleForm.password
+                        //     }
+                        // }).then(function (response) {
+                        //     if (response.data === 'ok') {
+                        //         window.location.replace('index');
+                        //     } else {
+                        //         that.$message({
+                        //             message: '用户名或密码错误',
+                        //             duration: 1500,
+                        //             type: 'error'
+                        //         });
+                        //     }
+                        // }).catch(function (err) {
+                        //     console.log(err);
+                        // });
+
                         return false;
                     } else {
                         return false;
