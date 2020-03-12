@@ -25,6 +25,12 @@
 </script>
 
 <style>
+    body {
+        margin: 0;
+    }
+    .el-header {
+        padding: 0;
+    }
     #app {
         font-family: Helvetica, sans-serif;
         text-align: center;

@@ -4,25 +4,11 @@
             <el-col :span="12">
                 <el-card class="box-card">
                     <div slot="header" class="clearfix">
-                        <el-row>
-                            <el-col :span="12">
-                                <span>推荐列表</span>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-input placeholder="请输入内容" v-model="input3" class="input-with-select">
-                                    <el-select v-model="select" slot="prepend" placeholder="请选择">
-                                        <el-option label="工单编号" value="1"></el-option>
-                                        <el-option label="关键词" value="2"></el-option>
-                                        <el-option label="店铺名称" value="3"></el-option>
-                                    </el-select>
-                                    <el-button slot="append" icon="el-icon-search"></el-button>
-                                </el-input>
-                            </el-col>
-                        </el-row>
+                        <span>推荐列表</span>
                     </div>
-                    <div v-for="o in 4" :key="o" class="text item">
+                    <div v-for="o in 4" :key="o" class="text i  tem">
                         <el-collapse accordion>
-                            <el-collapse-item v-bind:title="'工单20200310000'+ o">
+                            <el-collapse-item v-bind:title="'工单20200310000'+ o" v-bind:id="o">
                                 <el-form ref="form">
                                     <el-form-item label="关键词">
                                         <span class="ellipsis" v-text="" >短袖夏天男</span>
@@ -38,8 +24,13 @@
                                     <el-form-item label="商品链接">
                                         <el-link type="primary" href="https://www.baidu.com" target="_blank"> https://www.baidu.com</el-link>
                                     </el-form-item>
-                                    <el-form-item label="操作">
-                                        <el-button type="success" icon="el-icon-check">接单</el-button>
+                                    <el-form-item label="操作" v-if="1 > 0">
+                                        <el-button type="success" icon="el-icon-check" @click="addToTodo(o)">接单</el-button>
+                                    </el-form-item>
+                                    <el-form-item label="订单编号" v-else>
+                                        <el-input placeholder="请输入订单编号">
+                                            <el-button slot="append" icon="el-icon-check">完成</el-button>
+                                        </el-input>
                                     </el-form-item>
                                 </el-form>
                             </el-collapse-item>
@@ -110,6 +101,27 @@
                     type:'error'
                 })
             },
+            addToTodo() {
+                let that = this;
+                // this.$axios.get('/api/addToTodo?', {
+                //     params: {
+                //
+                //     }
+                // }).then(function (response) {
+                //     let page = response.data;
+                //     if (page.constructor === String) {
+                //         // 提示错误消息
+                //         that.$message({
+                //             message: page,
+                //             duration: 1500,
+                //             type: 'error'
+                //         });
+                //         // TODO 重新获取数据
+                //         return;
+                //     }
+                // })
+
+            }
         }
     }
 </script>

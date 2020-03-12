@@ -9,7 +9,7 @@
                 <el-input type="password" v-model="ruleForm.password" autocomplete="off" placeholder="请输入密码"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                 <el-button @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
         </el-form>
@@ -17,6 +17,9 @@
 </template>
 
 <script>
+
+    let _this = {};
+
     export default {
         name: "login",
         data() {
@@ -32,8 +35,8 @@
                                 if (value === '') {
                                     callback(new Error('请输入用户名'));
                                 } else {
-                                    if (this.that.ruleForm.username !== '') {
-                                        this.that.$refs.ruleForm.validateField('checkUsername');
+                                    if (_this.$refs.ruleForm.username !== '') {
+                                        _this.$refs.ruleForm.validateField('checkUsername');
                                     }
                                     callback();
                                 }
@@ -44,8 +47,8 @@
                                 if (value === '') {
                                     callback(new Error('请输入密码'));
                                 } else {
-                                    if (this.that.password !== '') {
-                                        this.that.$refs.ruleForm.validateField('checkPassword');
+                                    if (_this.$refs.ruleForm.password !== '') {
+                                        _this.$refs.ruleForm.validateField('checkPassword');
                                     }
                                     callback();
                                 }
@@ -71,16 +74,16 @@
                 let that = this;
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        // that.$axios.get('/doLogin', {
+                        // _this.$axios.get('/doLogin', {
                         //     params: {
-                        //         username: that.ruleForm.username,
-                        //         password: that.ruleForm.password
+                        //         username: _this.ruleForm.username,
+                        //         password: _this.ruleForm.password
                         //     }
                         // }).then(function (response) {
                         //     if (response.data === 'ok') {
                         //         window.location.replace('index');
                         //     } else {
-                        //         that.$message({
+                        //         _this.$message({
                         //             message: '用户名或密码错误',
                         //             duration: 1500,
                         //             type: 'error'
@@ -89,7 +92,8 @@
                         // }).catch(function (err) {
                         //     console.log(err);
                         // });
-
+                        localStorage.setItem("token", Math.random() * 10 + "");
+                        this.$router.replace({path: '/'});
                         return false;
                     } else {
                         return false;
@@ -100,11 +104,14 @@
                 this.$refs[formName].resetFields();
             }
         },
+        beforeCreate() {
+            _this = this;
+        },
         created() {
-            this.toLogin();
+            // this.toLogin();
         },
         computed() {
-            this.toLogin();
+            // this.toLogin();
         }
     }
 </script>

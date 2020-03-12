@@ -15,14 +15,18 @@ Vue.use(VueRouter);
 Vue.use(VueClipboard);
 
 // 引入组件
-import home from './components/home';
-import about from './components/about';
+import process from './components/process';
+import task from './components/task';
+import user from './components/user';
+import shop from './components/shop';
 import login from './components/login';
 
 const routes = [
     {path: '/login', component: login},
-    {path: '/home', component: home, meta: {requireAuth: true}},
-    {path: '/about', component: about, meta: {requireAuth: true}},
+    {path: '/user', component: user, meta: {requireAuth: true}},
+    {path: '/shop', component: shop, meta: {requireAuth: true}},
+    {path: '/', component: process, meta: {requireAuth: true}},
+    {path: '/task', component: task, meta: {requireAuth: true}},
 ];
 
 Vue.prototype.isLogin = false;
@@ -31,7 +35,6 @@ const router = new VueRouter({routes});
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requireAuth)) { // 判断该路由是否需要登录权限
-        console.log('需要登录...');
         let token = localStorage.getItem('token');
         Vue.prototype.isLogin = !!token;
         // 未登录状态；当路由到nextRoute指定页时，跳转至login
@@ -47,7 +50,6 @@ router.beforeEach((to, from, next) => {
         // 已登录状态；当路由到login时，跳转至home
         if (to.name === 'login') {
             if (token) {
-                console.log('已登录');
                 router.push({path: '/home'});
             }
         }
@@ -72,4 +74,5 @@ axios.interceptors.response.use(
     });
 
 
-new Vue({router, render: h => h(App)}).$mount('#app');
+const vue = new Vue({router, render: h => h(App)});
+vue.$mount('#app');
