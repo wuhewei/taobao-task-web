@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import axios from 'axios';
-import VueRouter from 'vue-router'
-import ElementUI from 'element-ui'
-import VueClipboard from 'vue-clipboard2'
-import 'element-ui/lib/theme-chalk/index.css'
+import VueRouter from 'vue-router';
+import VueMoment from 'vue-moment';
+import ElementUI from 'element-ui';
+import VueClipboard from 'vue-clipboard2';
+import 'element-ui/lib/theme-chalk/index.css';
 
 import App from './App.vue'
 
@@ -12,6 +13,7 @@ Vue.prototype.$axios = axios;
 
 Vue.use(ElementUI);
 Vue.use(VueRouter);
+Vue.use(VueMoment);
 Vue.use(VueClipboard);
 
 // 引入组件
@@ -37,7 +39,7 @@ router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requireAuth)) { // 判断该路由是否需要登录权限
         let token = localStorage.getItem('token');
         Vue.prototype.isLogin = !!token;
-        // 未登录状态；当路由到nextRoute指定页时，跳转至login
+        // 未登录状态；当路由到nextRoute指定页时，跳转至login从
         if (!token) {
             next({
                 path: '/login',

@@ -22,16 +22,36 @@
             <el-table-column
                     prop="status"
                     label="状态">
+                <template slot-scope="scope">
+                    <el-tag type="danger" v-if="scope.row.status === 0">禁用</el-tag>
+                    <el-tag type="success" v-else-if="scope.row.status === 1">启用</el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="createdTime"
+                    label="创建时间">
+                <template slot-scope="scope">
+                    {{scope.row.createdTime | moment('YYYY-MM-DD HH:mm:ss')}}
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="updatedTime"
+                    label="创建时间">
+                <template slot-scope="scope">
+                    {{scope.row.updatedTime | moment('YYYY-MM-DD HH:mm:ss')}}
+                </template>
             </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button
                             size="mini"
-                            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                            @click="handleEdit(scope.$index, scope.row)">编辑
+                    </el-button>
                     <el-button
                             size="mini"
                             type="danger"
-                            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                            @click="handleDelete(scope.$index, scope.row)">删除
+                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -50,13 +70,13 @@
         <el-dialog v-bind:title="dialogFormTitle" :visible.sync="dialogFormVisible">
             <el-form :model="taskForm" ref="refForm" :rules="rules">
                 <el-form-item label="店铺编号" prop="id">
-                    <el-input v-model="taskForm.id" autocomplete="off"></el-input>
+                    <el-input v-model="taskForm.id" autocomplete="off" placeholder="系统自动生成" :disabled="true"></el-input>
                 </el-form-item>
                 <el-form-item label="店铺名称" prop="name">
-                    <el-input v-model="taskForm.name" autocomplete="off"></el-input>
+                    <el-input v-model="taskForm.name" autocomplete="off" maxlength="32" show-word-limit></el-input>
                 </el-form-item>
                 <el-form-item label="状态">
-                    <el-switch v-model="taskForm.status"></el-switch>
+                    <el-switch :active-value="1" :inactive-value="0" v-model="taskForm.status"></el-switch>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -80,38 +100,9 @@
                 pageNo: 1,
                 pageSize: 10,
                 totalCount: 0,
-                tableData: [
-                    {
-                        id: '202003100001',
-                        keywords: '睡衣女',
-                        count: '3',
-                        shopName: '南极人正品家居服饰店',
-                        linkAddress: 'https://www.baidu.com'
-                    },
-                    {
-                        id: '202003100002',
-                        keywords: '人字拖',
-                        count: '5',
-                        shopName: '正品拖鞋皮革店',
-                        linkAddress: 'https://www.baidu.com'
-                    },
-                    {
-                        id: '202003100003',
-                        keywords: '棉袄睡衣',
-                        count: '6',
-                        shopName: '温暖小屋正品家居服饰店',
-                        linkAddress: 'https://www.baidu.com'
-                    },
-                    {
-                        id: '202003100004',
-                        keywords: '短袖夏天男',
-                        count: '1',
-                        shopName: '透心凉正品家居服饰店',
-                        linkAddress: 'https://www.baidu.com'
-                    },
-                ],
+                tableData: [],
                 multipleSelection: [],
-                dialogFormVisible:  false,
+                dialogFormVisible: false,
                 dialogFormTitle: '新建用户',
                 taskForm: {
                     id: '',
@@ -123,31 +114,18 @@
                     name: '',
                     status: '1',
                 },
-                rules: {
-
-                }
+                rules: {}
             }
         },
         methods: {
             search(pageNo, pageSize) {
                 let that = this;
-                this.$axios.get('/api/list?', {
-                    params: {
-                    }
+                this.$axios.get('/api/shop/list?', {
+                    params: {}
                 }).then(function (response) {
-                    that.loading = false;
                     let page = response.data;
-                    if (page.constructor === String) {
-                        // 提示错误消息
-                        that.$message({
-                            message: page,
-                            duration: 1500,
-                            type: 'error'
-                        });
-                        return;
-                    }
                     that.tableData = page.data;
-                    that.totalCount = page.totalCount;
+                    // that.totalCount = page.totalCount;
                 })
             },
             openDialog() {
@@ -159,8 +137,19 @@
                 });
             },
             handleAdd(form) {
+                let that = this;
+                this.$axios.post('/api/shop/saveOrUpdate?',
+                    {
+                        id: form.id,
+                        name: form.name,
+                        status: form.status
+                    }
+                ).then(function (response) {
+                    if (response.data.code === 1) {
+                        that.search(that.pageNo, that.pageSize);
+                    }
+                });
                 this.dialogFormVisible = false;
-                this.tableData.push(JSON.parse(JSON.stringify(form)));
             },
             handleEdit(index, row) {
                 this.dialogFormVisible = true;
@@ -169,16 +158,18 @@
                 this.taskForm = JSON.parse(JSON.stringify(row));
             },
             handleDelete(index, row) {
-                this.$confirm('此操作将会删除【'+ row.id +'】店铺, 是否继续?', '提示', {
+                this.$confirm('此操作将会删除【' + row.id + '】店铺, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$axios.delete('/api/del', {
-                        params: {id: row.id}
-                    }).then(res => {
-                        if (res.code === 1) {
+                    this.$axios.post('/api/shop/delete', {
+                            shopId: row.id
+                        }
+                    ).then(res => {
+                        if (res.data.code === 1) {
                             // TODO 从表格中删除
+                            this.search(this.pageNo, this.pageSize);
                             this.$message.success('删除成功')
                         }
                     });
