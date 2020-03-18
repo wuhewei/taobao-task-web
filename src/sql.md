@@ -13,7 +13,7 @@
         photoUrl varchar(500) not null comment '商品主图链接',
         price decimal(5, 2) default null comment '展示价',
         coupon_amount decimal(5, 2) default 0 comment '优惠券金额',
-        status tinyint not null default 1 comment '任务状态 0：未完成 1：已完成 -1：已取消',
+        status tinyint not null default 0 comment '任务状态 0：未完成 1：已完成 -1：已取消',
         deadline date not null comment '任务截止日期',
         created_time timestamp not null default current_timestamp comment '创建时间',
         updated_time timestamp not null default current_timestamp on update current_timestamp comment '更新时间',

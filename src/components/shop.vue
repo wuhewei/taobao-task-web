@@ -125,7 +125,6 @@
                 }).then(function (response) {
                     let page = response.data;
                     that.tableData = page.data;
-                    // that.totalCount = page.totalCount;
                 })
             },
             openDialog() {
@@ -158,19 +157,18 @@
                 this.taskForm = JSON.parse(JSON.stringify(row));
             },
             handleDelete(index, row) {
+                let that = this;
                 this.$confirm('此操作将会删除【' + row.id + '】店铺, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$axios.post('/api/shop/delete', {
-                            shopId: row.id
-                        }
-                    ).then(res => {
+                    let param = new URLSearchParams();
+                    param.append('shopId', row.id);
+                    this.$axios.post('/api/shop/delete?', param).then(res => {
                         if (res.data.code === 1) {
-                            // TODO 从表格中删除
-                            this.search(this.pageNo, this.pageSize);
-                            this.$message.success('删除成功')
+                            that.$message.success('删除成功');
+                            that.search(that.pageNo, that.pageSize);
                         }
                     });
                 });

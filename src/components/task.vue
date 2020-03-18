@@ -16,10 +16,6 @@
                     width="120">
             </el-table-column>
             <el-table-column
-                    prop="keywords"
-                    label="关键词">
-            </el-table-column>
-            <el-table-column
                     prop="photo"
                     label="商品图片">
                 <template slot-scope="scope">
@@ -27,18 +23,48 @@
                 </template>
             </el-table-column>
             <el-table-column
-                    prop="count"
-                    label="商品单数">
-            </el-table-column>
-            <el-table-column
-                    prop="shopName"
+                    prop="shopId"
                     label="店铺名称">
             </el-table-column>
             <el-table-column
-                    prop="linkAddress"
+                    prop="linkUrl"
                     label="商品链接">
                 <template slot-scope="scope">
-                    <el-link v-bind:href="scope.row.linkAddress" target="_blank">{{scope.row.linkAddress}}</el-link>
+                    <el-link v-bind:href="scope.row.linkUrl" target="_blank">{{scope.row.linkUrl}}</el-link>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="price"
+                    label="展示价">
+            </el-table-column>
+            <el-table-column
+                    prop="couponAmount"
+                    label="优惠券金额">
+            </el-table-column>
+            <el-table-column
+                    prop="deadline"
+                    label="任务截止日期">
+            </el-table-column>
+            <el-table-column
+                    prop="status"
+                    label="状态">
+                <template slot-scope="scope">
+                    <el-tag type="danger" v-if="scope.row.status === 0">未完成</el-tag>
+                    <el-tag type="success" v-else-if="scope.row.status === 1">已完成</el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="createdTime"
+                    label="创建时间">
+                <template slot-scope="scope">
+                    {{scope.row.createdTime | moment('YYYY-MM-DD HH:mm:ss')}}
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="updatedTime"
+                    label="创建时间">
+                <template slot-scope="scope">
+                    {{scope.row.updatedTime | moment('YYYY-MM-DD HH:mm:ss')}}
                 </template>
             </el-table-column>
             <el-table-column label="操作">
@@ -72,26 +98,29 @@
         <el-dialog v-bind:title="dialogFormTitle" :visible.sync="dialogFormVisible">
             <el-form :model="taskForm" ref="refForm" :rules="rules">
                 <el-form-item label="工单编号" label-width="120" prop="id">
-                    <el-input v-model="taskForm.id" autocomplete="off"></el-input>
+                    <el-input v-model="taskForm.id" autocomplete="off" placeholder="系统自动生成" :disabled="true"></el-input>
                 </el-form-item>
-                <el-form-item label="关键词" label-width="120" prop="keywords">
-                    <el-input v-model="taskForm.keywords" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="商品单数" label-width="120" prop="count">
-                    <el-input v-model="taskForm.count" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="店铺名称" prop="shopName">
+                <el-form-item label="店铺名称" prop="shopId">
                 </el-form-item>
                 <el-form-item>
-                    <el-select v-model="taskForm.shopName" placeholder="请选择店铺">
+                    <el-select v-model="taskForm.shopId" filterable placeholder="请选择店铺">
                         <el-option v-for="item in shopList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="商品链接" label-width="120" prop="linkAddress">
-                    <el-input v-model="taskForm.linkAddress" autocomplete="off"></el-input>
+                <el-form-item label="截止日期" label-width="120" prop="deadline">
+                    <el-date-picker v-model="taskForm.deadline" type="date" placeholder="请选择日期"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="商品链接" label-width="120" prop="linkUrl">
+                    <el-input v-model="taskForm.linkUrl" autocomplete="off" maxlength="500" show-word-limit></el-input>
                 </el-form-item>
                 <el-form-item label="商品图片链接" label-width="120" prop="photoUrl">
-                    <el-input v-model="taskForm.photoUrl" autocomplete="off"></el-input>
+                    <el-input v-model="taskForm.photoUrl" autocomplete="off" maxlength="500" show-word-limit></el-input>
+                </el-form-item>
+                <el-form-item label="展示价" label-width="120" prop="price">
+                    <el-input v-model="taskForm.price" autocomplete="off" maxlength="8" show-word-limit></el-input>
+                </el-form-item>
+                <el-form-item label="优惠券金额" label-width="120" prop="couponAmount">
+                    <el-input v-model="taskForm.couponAmount" autocomplete="off" maxlength="8" show-word-limit></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -127,36 +156,7 @@
                 pageNo: 1,
                 pageSize: 10,
                 totalCount: 0,
-                tableData: [
-                    {
-                        id: '202003100001',
-                        keywords: '睡衣女',
-                        count: '3',
-                        shopName: '南极人正品家居服饰店',
-                        linkAddress: 'https://www.baidu.com'
-                    },
-                    {
-                        id: '202003100002',
-                        keywords: '人字拖',
-                        count: '5',
-                        shopName: '正品拖鞋皮革店',
-                        linkAddress: 'https://www.baidu.com'
-                    },
-                    {
-                        id: '202003100003',
-                        keywords: '棉袄睡衣',
-                        count: '6',
-                        shopName: '温暖小屋正品家居服饰店',
-                        linkAddress: 'https://www.baidu.com'
-                    },
-                    {
-                        id: '202003100004',
-                        keywords: '短袖夏天男',
-                        count: '1',
-                        shopName: '透心凉正品家居服饰店',
-                        linkAddress: 'https://www.baidu.com'
-                    },
-                ],
+                tableData: [],
                 multipleSelection: [],
                 dialogFormVisible:  false,
                 dialogFormTitle: '新建工单',
@@ -175,62 +175,50 @@
                 ],
                 taskForm: {
                     id: '',
-                    keywords: '',
+                    deadline: '',
                     photoUrl: '',
-                    count: '',
-                    shopName: '',
-                    linkAddress: '',
+                    shopId: '',
+                    linkUrl: '',
+                    price: 0,
+                    couponAmount: 0
+
                 },
                 refForm: {
                     id: '',
-                    keywords: '',
+                    deadline: '',
                     photoUrl: '',
-                    count: '',
-                    shopName: '',
-                    linkAddress: '',
+                    shopId: '',
+                    linkUrl: '',
+                    price: 0,
+                    couponAmount: 0
                 },
                 rules: {
 
                 },
-                shopList: [
-                    {
-                        id: 202003100001,
-                        name: '南极人正品家居服饰店',
-                    },
-                    {
-                        id: 202003100002,
-                        name: '正品拖鞋皮革店',
-                    },
-                    {
-                        id: 202003100003,
-                        name: '温暖小屋正品家居服饰店',
-                    }
-                ]
+                shopList: []
             }
         },
         methods: {
             search(pageNo, pageSize) {
                 let that = this;
-                this.$axios.get('/api/list?', {
-                    params: {
-                    }
+                this.$axios.get('/api/task/list?', {
+                    params: {}
                 }).then(function (response) {
-                    that.loading = false;
                     let page = response.data;
-                    if (page.constructor === String) {
-                        // 提示错误消息
-                        that.$message({
-                            message: page,
-                            duration: 1500,
-                            type: 'error'
-                        });
-                        return;
-                    }
                     that.tableData = page.data;
-                    that.totalCount = page.totalCount;
+                })
+            },
+            async initShopList() {
+                let that = this;
+                await this.$axios.get('/api/shop/list?', {
+                    params: {}
+                }).then(function (response) {
+                    let page = response.data;
+                    that.shopList = page.data;
                 })
             },
             openDialog() {
+                this.initShopList();
                 this.dialogFormVisible = true;
                 this.dialogFormTitle = '新建工单';
                 this.$nextTick(() => {
@@ -239,8 +227,23 @@
                 });
             },
             handleAdd(form) {
+                let that = this;
+                this.$axios.post('/api/task/saveOrUpdate?',
+                    {
+                        id: form.id,
+                        deadline: form.deadline,
+                        photoUrl: form.photoUrl,
+                        shopId: form.shopId,
+                        linkUrl: form.linkUrl,
+                        price: form.price,
+                        couponAmount: form.couponAmount
+                    }
+                ).then(function (response) {
+                    if (response.data.code === 1) {
+                        that.search(that.pageNo, that.pageSize);
+                    }
+                });
                 this.dialogFormVisible = false;
-                this.tableData.push(JSON.parse(JSON.stringify(form)));
             },
             handleEdit(index, row) {
                 this.dialogFormVisible = true;
@@ -249,17 +252,18 @@
                 this.taskForm = JSON.parse(JSON.stringify(row));
             },
             handleDelete(index, row) {
+                let that = this;
                 this.$confirm('此操作将会删除【'+ row.id +'】工单, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$axios.delete('/api/del', {
-                        params: {id: row.id}
-                    }).then(res => {
-                        if (res.code === 1) {
-                            // TODO 从表格中删除
-                            this.$message.success('删除成功')
+                    let param = new URLSearchParams();
+                    param.append('userId',  row.id)
+                    this.$axios.post('/api/task/delete?', param).then(res => {
+                        if (res.data.code === 1) {
+                            that.$message.success('删除成功');
+                            that.search(that.pageNo, that.pageSize);
                         }
                     });
                 });
